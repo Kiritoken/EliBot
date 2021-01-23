@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 菜单
+ *
  * @author Eli
  */
 @Slf4j
@@ -19,7 +20,7 @@ public class MenuHandler extends AbstractHandler {
     @Override
     public boolean isMatched(Bot bot, GroupMessageEvent event) {
         String message = event.getMessage().contentToString();
-        String atId = "@" + String.valueOf(bot.getId());
+        String atId = "@" + bot.getId();
         String atNick = "@" + bot.getNick();
         return message.contains(atId) || message.contains(atNick);
     }
@@ -31,8 +32,10 @@ public class MenuHandler extends AbstractHandler {
         // 引用回复
         final QuoteReply quote = new QuoteReply(event.getSource());
         String menu = "尝试回复以下内容\n" +
-                "#基金查询+基金代码\n"+
-                "#上线";
+                "#基金查询+基金代码\n" +
+                "#今日球鞋\n" +
+                "#上线\n" +
+                "#About";
         event.getGroup().sendMessage(quote.plus(menu));
     }
 }

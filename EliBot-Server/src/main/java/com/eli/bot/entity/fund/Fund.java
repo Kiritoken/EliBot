@@ -1,4 +1,4 @@
-package com.eli.bot.entity;
+package com.eli.bot.entity.fund;
 
 import java.util.List;
 

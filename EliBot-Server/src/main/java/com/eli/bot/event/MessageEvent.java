@@ -9,7 +9,6 @@ import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -20,8 +19,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageEvent extends SimpleListenerHost {
 
-    @Autowired
-    private HandlerChain handlerChain;
+    private final HandlerChain handlerChain;
+
+    public MessageEvent(HandlerChain handlerChain) {
+        this.handlerChain = handlerChain;
+    }
 
     @Override
     public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
