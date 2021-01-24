@@ -1,5 +1,6 @@
 package com.eli.bot.handler;
 
+import com.eli.bot.cache.CacheHolder;
 import com.eli.bot.entity.snkrs.Product;
 import com.eli.bot.entity.snkrs.Sneaker;
 import com.eli.bot.service.ISneakerService;
@@ -74,8 +75,8 @@ public class SneakersSearchHandler extends AbstractHandler {
                     chainBuilder.append(sneakerInfoMsg);
 
                     // 球鞋图片
-                    Image sneakerImage = uploadSneakerImage(sneaker, event);
-                    chainBuilder.append(sneakerImage);
+                    String sneakerImageId = uploadSneakerImageAndGetImageId(sneaker, event);
+                    chainBuilder.append(Image.fromId(sneakerImageId));
                 }
                 event.getSubject().sendMessage(chainBuilder.build());
             } else {
@@ -100,6 +101,7 @@ public class SneakersSearchHandler extends AbstractHandler {
             try {
                 Date startSellDate = simpleDateFormat.parse(startSellDateStr);
                 Date nowDay = new Date();
+//                return DateUtils.isSameDay(startSellDate, nowDay) || startSellDate.getTime() > nowDay.getTime();
                 return DateUtils.isSameDay(startSellDate, nowDay);
             } catch (ParseException e) {
                 log.error("", e);
@@ -108,15 +110,25 @@ public class SneakersSearchHandler extends AbstractHandler {
         }).collect(Collectors.toList());
     }
 
-    private Image uploadSneakerImage(Sneaker sneaker, GroupMessageEvent event) {
-        // 查询当天基金信息
+    private String uploadSneakerImageAndGetImageId(Sneaker sneaker, GroupMessageEvent event) {
         String imageUrl = sneaker.getImageUrl();
-        ResponseEntity<byte[]> res = restTemplate.getForEntity(imageUrl, byte[].class);
-        byte[] image = res.getBody();
-        if (null != image) {
-            return event.getGroup().uploadImage(ExternalResource.create(image));
+        // 查询缓存获取snkrs图片ID缓存
+        String imageId = (String) CacheHolder.getCache("snkrs").getIfPresent(imageUrl);
+        if (StringUtils.isEmpty(imageId)) {
+            log.info("snkrs: {} cache miss", imageUrl);
+            // 上传图片
+            ResponseEntity<byte[]> res = restTemplate.getForEntity(imageUrl, byte[].class);
+            byte[] image = res.getBody();
+            if (null != image) {
+                Image uploadedImage = event.getGroup().uploadImage(ExternalResource.create(image));
+                CacheHolder.getCache("snkrs").put(imageUrl, uploadedImage.getImageId());
+                return uploadedImage.getImageId();
+            } else {
+                throw new RuntimeException("下载球鞋图片" + imageUrl + "异常");
+            }
         } else {
-            throw new RuntimeException("下载球鞋图片" + imageUrl + "异常");
+            log.info("snkrs: {} cache hitted", imageUrl);
+            return imageId;
         }
     }
 }
