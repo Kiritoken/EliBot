@@ -10,21 +10,33 @@ import pathlib
 from bs4 import BeautifulSoup
 import time
 import re
-import urllib.request
 import json
 import flask
+from selenium import webdriver
+from selenium.webdriver import ChromeOptions
+
+# 设置options参数，以开发者模式运行
+option = ChromeOptions()
+option.add_experimental_option("excludeSwitches", ["enable-automation"])
+
+# 解决报错，设置无界面运行
+option.add_argument('--no-sandbox')
+option.add_argument('--disable-dev-shm-usage')
+option.add_argument('window-size=1920x3000')  # 指定浏览器分辨率
+option.add_argument('--disable-gpu')  # 谷歌文档提到需要加上这个属性来规避bug
+option.add_argument('--hide-scrollbars')  # 隐藏滚动条, 应对一些特殊页面
+option.add_argument('blink-settings=imagesEnabled=false')  # 不加载图片, 提升速度
+option.add_argument('--headless')  # 浏览器不提供可视化页面. linux下如果系统不支持可视化不加这条会启动失败
+option.binary_location = r"C:\Program Files\Google\Chrome\Application\chrome.exe"  # 手动指定使用的浏览器位置
 
 
 def crawl(url):
-    headers = {
-        "User-Agent": "Mozilla / 5.0(Windows NT 10.0;Win64;x64) AppleWebKit / 537.36(KHTML, likeGecko) Chrome / "
-                      "87.0.4280.141Safari / 537.36 "
-    }
-    data = bytes()
-    req = urllib.request.Request(url, data, headers, method="GET")
-    document = urllib.request.urlopen(req, timeout=3).read().decode("utf-8")
+    driver = webdriver.Chrome(options=option)
+    driver.implicitly_wait(10)  # 隐性等待，最长等30秒
+    driver.get(url)
     # 解析html
-    html = BeautifulSoup(document, "html.parser")
+    html = BeautifulSoup(driver.page_source, "html.parser")
+    driver.close()
     fund_name = \
         html.find_all('div', class_="fundDetail-tit")[0].find_all('div', style="float: left")[0].text.split('(')[0]
     # 基金代码
