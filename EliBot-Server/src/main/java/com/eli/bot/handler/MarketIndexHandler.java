@@ -59,6 +59,7 @@ public class MarketIndexHandler extends AbstractHandler {
 
         public static ComponentIndex getIndex(String board) {
             switch (board) {
+                case "":
                 case "上证":
                     return ShangHai;
                 case "深证":
