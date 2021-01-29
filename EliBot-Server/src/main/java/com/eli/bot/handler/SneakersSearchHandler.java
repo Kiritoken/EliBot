@@ -45,14 +45,14 @@ public class SneakersSearchHandler extends AbstractHandler {
     }
 
     @Override
-    public boolean isMatched(Bot bot, GroupMessageEvent event) {
+    public boolean isMatched(GroupMessageEvent event) {
         String message = event.getMessage().contentToString();
         // 判断是否符合查询格式
         return message.startsWith("#今日球鞋");
     }
 
     @Override
-    public void handle(Bot bot, GroupMessageEvent event) {
+    public void handle(GroupMessageEvent event) {
         log.info("群:{}({}) 成员:{}({}) 查询球鞋信息", event.getGroup().getName(), event.getGroup().getId(),
                 event.getSender().getNick(), event.getSender().getId());
         // 引用回复

@@ -42,14 +42,14 @@ public class FundInfoSearchHandler extends AbstractHandler {
     }
 
     @Override
-    public boolean isMatched(Bot bot, GroupMessageEvent event) {
+    public boolean isMatched(GroupMessageEvent event) {
         String message = event.getMessage().contentToString();
         // 判断是否符合查询格式
         return message.startsWith("#基金查询");
     }
 
     @Override
-    public void handle(Bot bot, GroupMessageEvent event) {
+    public void handle(GroupMessageEvent event) {
         String message = event.getMessage().contentToString();
         String fundCode = message.substring(5).trim();
         log.info("群:{}({}) 成员:{}({}) 查询基金{}信息", event.getGroup().getName(), event.getGroup().getId(),

@@ -17,15 +17,15 @@ import java.io.File;
 @RunWith(SpringRunner.class)
 public class EcsFileServiceImplTest {
 
-    @Autowired
-    private IEcsFileService ecsFileService;
+//    @Autowired
+//    private IEcsFileService ecsFileService;
 
 
     @Test
     public void testUploadFile() throws QiniuException {
-        File file = new File("C:\\Users\\Eli\\Videos\\Captures\\testgg.mp4");
-        Response response = ecsFileService.uploadFile(file);
-        log.info("{}", response);
+//        File file = new File("C:\\Users\\Eli\\Videos\\Captures\\testgg.mp4");
+//        Response response = ecsFileService.uploadFile(file);
+//        log.info("{}", response);
     }
 
 }

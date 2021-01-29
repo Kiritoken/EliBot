@@ -17,7 +17,7 @@ import java.io.File;
  * @author Eli
  */
 @Slf4j
-@Service
+//@Service
 public class EcsFileServiceImpl implements IEcsFileService {
 
     private final UploadManager uploadManager;

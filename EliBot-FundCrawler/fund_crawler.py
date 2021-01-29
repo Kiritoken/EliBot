@@ -27,8 +27,7 @@ option.add_argument('--disable-gpu')  # 谷歌文档提到需要加上这个属�
 option.add_argument('--hide-scrollbars')  # 隐藏滚动条, 应对一些特殊页面
 option.add_argument('blink-settings=imagesEnabled=false')  # 不加载图片, 提升速度
 option.add_argument('--headless')  # 浏览器不提供可视化页面. linux下如果系统不支持可视化不加这条会启动失败
-option.binary_location = r"C:\Program Files\Google\Chrome\Application\chrome.exe"  # 手动指定使用的浏览器位置
-
+option.binary_location = r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"  # 手动指定使用的浏览器位置
 
 def crawl(url):
     driver = webdriver.Chrome(options=option)
@@ -85,9 +84,50 @@ def save(crawl_data, fund_code):
             json.dump(crawl_data, file_writer, ensure_ascii=False)
     pass
 
+def crawlIndex(url):
+    driver = webdriver.Chrome(options=option)
+    driver.implicitly_wait(10)  # 隐性等待，最长等30秒
+    driver.get(url)
+    # 解析html
+    html = BeautifulSoup(driver.page_source, "html.parser")
+    driver.close()
+    # <h2 class="header-title-h2 fl" id="name">上证指数</h2>
+    index_name = \
+        html.find_all('h2', class_="header-title-h2 fl", id="name")[0].text
+    # 指数代码
+    # <b class="header-title-c fl" id="code">000001</b>
+    index_code = html.find_all('b', class_="header-title-c fl", id="code")[0].text
+    # 涨跌幅
+    # <b id="km2" class="xp4 green" style="">-0.63%</b>
+    a_d = html.find_all('b', class_="xp4 green", id="km2")[0].text
+    # 价格
+    # <strong id="price9" class="xp1 green" style="">3483.07</strong>
+    price = html.find_all('strong', class_="xp1 green", id="price9")[0].text
+    # 涨跌额
+    # <b id="km1" class="xp3 green" style="">-22.11</b>
+    price_a_d = html.find_all('b', class_="xp3 green", id="km1")[0].text
+    # 日期
+    # <span id="hqday" class="hqday">（2021-01-29 星期五 15:39:50）</span>
+    date = html.find_all('span', class_="hqday", id='hqday')[0].text.strip('()')
+    # 更新时间
+    update_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    # 记录爬取的数据
+    crawl_data = {date: {
+        "index_name": index_name,
+        "index_code": index_code,
+        "a_d": a_d,
+        "price": price,
+        "price_a_d": price_a_d,
+        "update_time": update_time,
+    }}
+    return crawl_data
+
+def saveIndex(crawl_data, index_code):
+    file_path = "./index_data/" + index_code + ".json"
+    with open(file_path, "w", encoding='utf-8') as file_writer:
+        json.dump(crawl_data, file_writer, ensure_ascii=False)
 
 server = flask.Flask(__name__)
-
 
 @server.route('/getFundInfo', methods=['get', 'post'])
 def get_fund_info():
@@ -98,7 +138,7 @@ def get_fund_info():
         data = crawl(fund_url)
         save(data, fund_code)
         res = {'msg': '获取基金信息成功', 'code': 200}
-        for (key, value) in data.items():
+        for (_, value) in data.items():
             res['data'] = value
         return json.dumps(res, ensure_ascii=False)
     except Exception as e:
@@ -106,6 +146,22 @@ def get_fund_info():
         res = {'msg': '获取基金信息失败', 'code': 500}
         return json.dumps(res, ensure_ascii=False)
 
+@server.route('/getIndexInfo', methods=['get', 'post'])
+def get_index_info():
+    try:
+        # 指数代码
+        index_code = flask.request.values.get('indexCode')
+        index_url = "http://quote.eastmoney.com/zs" + index_code + ".html"
+        data = crawlIndex(index_url)
+        saveIndex(data, index_code)
+        res = {'msg': '获取指数信息成功', 'code': 200}
+        for (_, value) in data.items():
+            res['data'] = value
+        return json.dumps(res, ensure_ascii=False)
+    except Exception as e:
+        print(e, "爬取异常")
+        res = {'msg': '获取指数信息失败', 'code': 500}
+        return json.dumps(res, ensure_ascii=False)
 
 if __name__ == "__main__":
     server.run(port=8081)

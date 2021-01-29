@@ -18,7 +18,8 @@ import org.springframework.stereotype.Component;
 public class MenuHandler extends AbstractHandler {
 
     @Override
-    public boolean isMatched(Bot bot, GroupMessageEvent event) {
+    public boolean isMatched(GroupMessageEvent event) {
+        Bot bot = event.getBot();
         String message = event.getMessage().contentToString();
         String atId = "@" + bot.getId();
         String atNick = "@" + bot.getNick();
@@ -26,7 +27,7 @@ public class MenuHandler extends AbstractHandler {
     }
 
     @Override
-    public void handle(Bot bot, GroupMessageEvent event) {
+    public void handle(GroupMessageEvent event) {
         log.info("群:{}({}) 成员:{}({}) 信息:{}", event.getGroup().getName(), event.getGroup().getId(),
                 event.getSender().getNick(), event.getSender().getId(), event.getMessage().contentToString());
         // 引用回复

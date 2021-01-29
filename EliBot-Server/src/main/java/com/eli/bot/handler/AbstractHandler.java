@@ -11,19 +11,17 @@ public abstract class AbstractHandler {
     /**
      * 符合条件
      *
-     * @param bot   Bot
      * @param event 群消息事件
      * @return true:符合条件；false：不符合条件
      */
-    public abstract boolean isMatched(Bot bot, GroupMessageEvent event);
+    public abstract boolean isMatched(GroupMessageEvent event);
 
     /**
      * 处理事件
      *
-     * @param bot   Bot
      * @param event 群消息事件
      * @throws Exception e
      */
-    public abstract void handle(Bot bot, GroupMessageEvent event) throws Exception;
+    public abstract void handle(GroupMessageEvent event) throws Exception;
 
 }

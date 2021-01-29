@@ -21,5 +21,4 @@ public interface IFundService {
      */
     Optional<Fund> findFindInfo(@NotNull String fundCode);
 
-
 }

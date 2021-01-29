@@ -17,14 +17,14 @@ public class AboutHandler extends AbstractHandler {
 
 
     @Override
-    public boolean isMatched(Bot bot, GroupMessageEvent event) {
+    public boolean isMatched(GroupMessageEvent event) {
         String message = event.getMessage().contentToString();
         // 判断是否符合查询格式
         return message.startsWith("#About");
     }
 
     @Override
-    public void handle(Bot bot, GroupMessageEvent event) {
+    public void handle(GroupMessageEvent event) {
         String aboutMessage = "我起了,一枪秒了,有什么好说的\nGithub: https://github.com/Kiritoken/EliBot\n";
         event.getSubject().sendMessage(aboutMessage);
     }

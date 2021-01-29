@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Eli
  * @date 2021/1/24
  */
-@Configuration
+//@Configuration
 public class EcsConfig {
 
     @Value("${qiniu.AccessKey}")

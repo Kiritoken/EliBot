@@ -39,7 +39,7 @@ public class MessageEvent extends SimpleListenerHost {
             // 自己发送的消息
             return ListeningStatus.LISTENING;
         }
-        handlerChain.handle(bot, event);
+        handlerChain.handle(event);
         // 表示继续监听事件
         return ListeningStatus.LISTENING;
     }

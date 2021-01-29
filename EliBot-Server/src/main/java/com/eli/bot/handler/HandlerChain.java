@@ -19,10 +19,10 @@ public class HandlerChain {
         this.handlers = handlers;
     }
 
-    public void handle(Bot bot, GroupMessageEvent event) throws Exception {
+    public void handle(GroupMessageEvent event) throws Exception {
         for (AbstractHandler handler : handlers) {
-            if (handler.isMatched(bot, event)) {
-                handler.handle(bot, event);
+            if (handler.isMatched(event)) {
+                handler.handle(event);
                 return;
             }
         }
