@@ -5,12 +5,14 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactory;
+import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.utils.BotConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
  * 机器人
+ *
  * @author Eli
  */
 @Slf4j
@@ -48,6 +50,7 @@ public class BotCenter {
         bot.login();
         // 注册事件
         bot.getEventChannel().registerListenerHost(messageEvent);
+        Group group = bot.getGroup(116868731);
         log.info("qq:{} 已成功登录", id);
     }
 }

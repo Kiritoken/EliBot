@@ -3,7 +3,6 @@ package com.eli.bot.handler;
 import com.eli.bot.entity.marketIndex.MarketIndex;
 import com.eli.bot.service.IMarketIndexService;
 import lombok.extern.slf4j.Slf4j;
-import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -28,21 +27,48 @@ public class MarketIndexHandler extends AbstractHandler {
     private enum ComponentIndex {
         // 默认值
         Unknown {
-            public String getCode() { return "000000"; }
+            @Override
+            public String getCode() {
+                return "000000";
+            }
         },
         // 上证指数
         ShangHai {
-            public String getCode() { return "000001"; }
+            @Override
+            public String getCode() {
+                return "000001";
+            }
         },
         // 深证成指
         Shenzhen {
-            public String getCode() { return "399001"; }
+            @Override
+            public String getCode() {
+                return "399001";
+            }
         },
         // 创业板指
         GrowthEnterprise {
-            public String getCode() { return "399006"; }
+            @Override
+            public String getCode() {
+                return "399006";
+            }
         };
+
         public abstract String getCode();
+
+
+        public static ComponentIndex getIndex(String board) {
+            switch (board) {
+                case "上证":
+                    return ShangHai;
+                case "深证":
+                    return Shenzhen;
+                case "创业板":
+                    return GrowthEnterprise;
+                default:
+                    return Unknown;
+            }
+        }
     }
 
     private final RestTemplate restTemplate;
@@ -63,24 +89,11 @@ public class MarketIndexHandler extends AbstractHandler {
 
     @Override
     public void handle(GroupMessageEvent event) {
-        Bot bot = event.getBot();
         String message = event.getMessage().contentToString();
         String board = message.substring(3).trim();
         log.info("群:{}({}) 成员:{}({}) 查询大盘{}信息", event.getGroup().getName(), event.getGroup().getId(),
                 event.getSender().getNick(), event.getSender().getId(), board);
-        ComponentIndex index = ComponentIndex.Unknown;
-        switch (board) {
-            case "":
-            case "上证":
-                index = ComponentIndex.ShangHai;
-                break;
-            case "深证":
-                index = ComponentIndex.Shenzhen;
-                break;
-            case "创业板":
-                index = ComponentIndex.GrowthEnterprise;
-                break;
-        }
+        ComponentIndex index = ComponentIndex.getIndex(board);
         if (index == ComponentIndex.Unknown) {
             event.getGroup().sendMessage("该板块跳楼了");
             return;
@@ -111,8 +124,11 @@ public class MarketIndexHandler extends AbstractHandler {
     private Image uploadIndexImage(ComponentIndex index, GroupMessageEvent event) {
         String url = "http://webquotepic.eastmoney.com/GetPic.aspx?nid=";
         // 上证
-        if (index == ComponentIndex.ShangHai) url += "1.";
-        else url += "0.";
+        if (index == ComponentIndex.ShangHai) {
+            url += "1.";
+        } else {
+            url += "0.";
+        }
         url += index.getCode() + "&imageType=r";
         ResponseEntity<byte[]> res = restTemplate.getForEntity(url, byte[].class);
         byte[] image = res.getBody();
