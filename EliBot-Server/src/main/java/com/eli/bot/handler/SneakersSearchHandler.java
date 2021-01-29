@@ -101,8 +101,8 @@ public class SneakersSearchHandler extends AbstractHandler {
             try {
                 Date startSellDate = simpleDateFormat.parse(startSellDateStr);
                 Date nowDay = new Date();
-//                return DateUtils.isSameDay(startSellDate, nowDay) || startSellDate.getTime() > nowDay.getTime();
-                return DateUtils.isSameDay(startSellDate, nowDay);
+                return DateUtils.isSameDay(startSellDate, nowDay) || startSellDate.getTime() > nowDay.getTime();
+//                return DateUtils.isSameDay(startSellDate, nowDay);
             } catch (ParseException e) {
                 log.error("", e);
                 throw new RuntimeException("球鞋信息查询时间解析错误");
