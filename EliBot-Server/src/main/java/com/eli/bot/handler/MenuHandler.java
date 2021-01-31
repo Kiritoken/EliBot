@@ -36,6 +36,7 @@ public class MenuHandler extends AbstractHandler {
                 "#基金查询+基金代码\n" +
                 "#今日球鞋\n" +
                 "#上线\n" +
+                "#demo\n" +
                 "#About";
         event.getGroup().sendMessage(quote.plus(menu));
     }

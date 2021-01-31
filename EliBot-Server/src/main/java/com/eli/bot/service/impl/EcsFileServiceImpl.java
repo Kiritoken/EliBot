@@ -17,7 +17,7 @@ import java.io.File;
  * @author Eli
  */
 @Slf4j
-//@Service
+@Service
 public class EcsFileServiceImpl implements IEcsFileService {
 
     private final UploadManager uploadManager;
@@ -39,7 +39,7 @@ public class EcsFileServiceImpl implements IEcsFileService {
     public Response uploadFile(File file) throws QiniuException {
         log.info("开始上传文件{}至存储空间...", file.getName());
         long beginTime = SystemClock.now();
-        Response response = uploadManager.put(file, null, getUploadToken());
+        Response response = uploadManager.put(file, file.getName(), getUploadToken());
         int retry = 0;
         while (response.needRetry() && retry < RETRY_TIME) {
             response = uploadManager.put(file, null, getUploadToken());
@@ -48,7 +48,7 @@ public class EcsFileServiceImpl implements IEcsFileService {
         if (retry == RETRY_TIME) {
             log.info("{}次重试后,上传文件{}失败,耗时{}ms...", RETRY_TIME, file.getName(), SystemClock.now() - beginTime);
             throw new RuntimeException("文件上传失败");
-        }else {
+        } else {
             log.info("文件{}上传成功,耗时{}ms...", file.getName(), SystemClock.now() - beginTime);
         }
         return response;
