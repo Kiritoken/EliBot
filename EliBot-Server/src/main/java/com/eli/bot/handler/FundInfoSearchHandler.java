@@ -4,7 +4,6 @@ import com.eli.bot.entity.fund.Fund;
 import com.eli.bot.entity.fund.PositionSharesItem;
 import com.eli.bot.service.IFundService;
 import lombok.extern.slf4j.Slf4j;
-import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -45,7 +44,7 @@ public class FundInfoSearchHandler extends AbstractHandler {
     public boolean isMatched(GroupMessageEvent event) {
         String message = event.getMessage().contentToString();
         // 判断是否符合查询格式
-        return message.startsWith("#基金查询");
+        return message.startsWith("#基金查询") || message.startsWith("#查询基金");
     }
 
     @Override
@@ -60,7 +59,7 @@ public class FundInfoSearchHandler extends AbstractHandler {
                 // 基金图片
                 Image image = uploadFundImage(fundCode, event);
 
-                Fund fund = fundService.findFindInfo(fundCode).orElse(new Fund());
+                Fund fund = fundService.findFundInfo(fundCode).orElse(new Fund());
                 List<PositionSharesItem> positionShares = fund.getPositionShares();
                 // 基金信息
                 String fundInfo = String.format("%s(%s)\n日涨跌幅: %s\n净值: %s(%s)\n更新时间: %s\n", fund.getFundName(), fund.getFundCode(), fund.getAD()
@@ -72,7 +71,7 @@ public class FundInfoSearchHandler extends AbstractHandler {
                 } else {
                     sharesInfo.append("持仓信息如下:\n");
                     for (PositionSharesItem item : positionShares) {
-                        sharesInfo.append(item.getStockName()).append("  ").append(item.getStockShares()).append("  ").append(item.getStockAD()).append("\n");
+                        sharesInfo.append(item.getName()).append("  ").append(item.getShares()).append("  ").append(item.getAD()).append("\n");
                     }
                 }
 

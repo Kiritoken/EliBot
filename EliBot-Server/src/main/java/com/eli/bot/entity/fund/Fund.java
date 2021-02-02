@@ -52,6 +52,6 @@ public class Fund {
     /**
      * 持仓占比
      */
-    @JSONField(name = "position_shares")
+    @JSONField(name = "shares")
     private List<PositionSharesItem> positionShares;
 }

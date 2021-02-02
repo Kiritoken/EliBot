@@ -33,7 +33,10 @@ public class MenuHandler extends AbstractHandler {
         // 引用回复
         final QuoteReply quote = new QuoteReply(event.getSource());
         String menu = "尝试回复以下内容\n" +
-                "#基金查询+基金代码\n" +
+                "#基金查询 基金代码\n" +
+                "#大盘 [上证|深证|创业板]\n" +
+                "#持仓\n" +
+                "#编辑持仓 基金代码 使用空格分隔多个基金代码\n" +
                 "#今日球鞋\n" +
                 "#上线\n" +
                 "#demo\n" +

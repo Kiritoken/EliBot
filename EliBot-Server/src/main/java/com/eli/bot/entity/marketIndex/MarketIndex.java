@@ -1,10 +1,7 @@
 package com.eli.bot.entity.marketIndex;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.eli.bot.entity.fund.PositionSharesItem;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * 指数信息

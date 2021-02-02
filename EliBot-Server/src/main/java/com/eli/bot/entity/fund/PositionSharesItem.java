@@ -11,12 +11,12 @@ import lombok.Data;
 @Data
 public class PositionSharesItem{
 
-	@JSONField(name="stock_shares")
-	private String stockShares;
+	@JSONField(name="shares")
+	private String shares;
 
-	@JSONField(name="stock_name")
-	private String stockName;
+	@JSONField(name="name")
+	private String name;
 
-	@JSONField(name="stock_a_d")
-	private String stockAD;
+	@JSONField(name="a_d")
+	private String aD;
 }

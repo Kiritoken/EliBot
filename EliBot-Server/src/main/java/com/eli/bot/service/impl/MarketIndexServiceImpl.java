@@ -40,7 +40,7 @@ public class MarketIndexServiceImpl implements IMarketIndexService {
         if (StringUtils.isEmpty(indexCode)) {
             return Optional.empty();
         }
-        // 调用基金查询接口
+        // 调用指数查询接口
         ResponseEntity<String> entity = restTemplate.getForEntity(queryIndexInfoApi + "?indexCode=" + indexCode, String.class);
         String body = entity.getBody();
         JSONObject res = JSON.parseObject(body);

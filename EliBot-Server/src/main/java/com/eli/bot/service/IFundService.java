@@ -1,8 +1,10 @@
 package com.eli.bot.service;
 
 import com.eli.bot.entity.fund.Fund;
+import com.eli.bot.entity.fundHoldings.LeptFund;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,6 +21,8 @@ public interface IFundService {
      * @param fundCode 基金代码
      * @return Optional<Fund>
      */
-    Optional<Fund> findFindInfo(@NotNull String fundCode);
+    Optional<Fund> findFundInfo(@NotNull String fundCode);
+
+    Optional<List<LeptFund>> findFundsInfoList(@NotNull String fundCode);
 
 }
